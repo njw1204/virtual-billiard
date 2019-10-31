@@ -47,10 +47,10 @@ D3DXMATRIX g_mProj;
 
 class CSphere {
 private :
-	float					center_x, center_y, center_z;
+    float					center_x, center_y, center_z;
     float                   m_radius;
-	float					m_velocity_x;
-	float					m_velocity_z;
+    float					m_velocity_x;
+    float					m_velocity_z;
 
 public:
     CSphere(void)
@@ -58,8 +58,8 @@ public:
         D3DXMatrixIdentity(&m_mLocal);
         ZeroMemory(&m_mtrl, sizeof(m_mtrl));
         m_radius = 0;
-		m_velocity_x = 0;
-		m_velocity_z = 0;
+        m_velocity_x = 0;
+        m_velocity_z = 0;
         m_pSphereMesh = NULL;
     }
     ~CSphere(void) {}
@@ -96,21 +96,21 @@ public:
         pDevice->SetTransform(D3DTS_WORLD, &mWorld);
         pDevice->MultiplyTransform(D3DTS_WORLD, &m_mLocal);
         pDevice->SetMaterial(&m_mtrl);
-		m_pSphereMesh->DrawSubset(0);
+        m_pSphereMesh->DrawSubset(0);
     }
 
     bool hasIntersected(CSphere& ball)
-	{
+    {
         double x = this->center_x - ball.center_x;
         double z = this->center_z - ball.center_z;
         double squareDistance = x * x + z * z;
         double radSum = this->getRadius() + ball.getRadius();
 
         return squareDistance <= radSum * radSum + std::numeric_limits<float>::epsilon();
-	}
+    }
 
-	void hitBy(CSphere& ball)
-	{
+    void hitBy(CSphere& ball)
+    {
         const float BACKTRACK_TIME_STEP = 0.001f;
         const float BALL_HIT_DECREASE_RATE = 0.93f;
 
@@ -135,58 +135,58 @@ public:
             this->setPower(aVecNew.x * BALL_HIT_DECREASE_RATE, aVecNew.y * BALL_HIT_DECREASE_RATE);
             ball.setPower(bVecNew.x * BALL_HIT_DECREASE_RATE, bVecNew.y * BALL_HIT_DECREASE_RATE);
         }
-	}
+    }
 
-	void ballUpdate(float timeDiff)
-	{
-		const float TIME_SCALE = 3.3;
-		D3DXVECTOR3 cord = this->getCenter();
-		double vx = abs(this->getVelocity_X());
-		double vz = abs(this->getVelocity_Z());
+    void ballUpdate(float timeDiff)
+    {
+        const float TIME_SCALE = 3.3;
+        D3DXVECTOR3 cord = this->getCenter();
+        double vx = abs(this->getVelocity_X());
+        double vz = abs(this->getVelocity_Z());
 
-		if(vx > 0.01 || vz > 0.01)
-		{
-			float tX = cord.x + TIME_SCALE*timeDiff*m_velocity_x;
-			float tZ = cord.z + TIME_SCALE*timeDiff*m_velocity_z;
+        if(vx > 0.01 || vz > 0.01)
+        {
+            float tX = cord.x + TIME_SCALE*timeDiff*m_velocity_x;
+            float tZ = cord.z + TIME_SCALE*timeDiff*m_velocity_z;
 
-			//correction of position of ball
-			if(tX >= (4.5 - M_RADIUS))
-				tX = 4.5 - M_RADIUS;
-			else if(tX <=(-4.5 + M_RADIUS))
-				tX = -4.5 + M_RADIUS;
-			else if(tZ <= (-3 + M_RADIUS))
-				tZ = -3 + M_RADIUS;
-			else if(tZ >= (3 - M_RADIUS))
-				tZ = 3 - M_RADIUS;
+            //correction of position of ball
+            if(tX >= (4.5 - M_RADIUS))
+                tX = 4.5 - M_RADIUS;
+            else if(tX <=(-4.5 + M_RADIUS))
+                tX = -4.5 + M_RADIUS;
+            else if(tZ <= (-3 + M_RADIUS))
+                tZ = -3 + M_RADIUS;
+            else if(tZ >= (3 - M_RADIUS))
+                tZ = 3 - M_RADIUS;
 
-			this->setCenter(tX, cord.y, tZ);
-		}
-		else { this->setPower(0,0);}
-		//this->setPower(this->getVelocity_X() * DECREASE_RATE, this->getVelocity_Z() * DECREASE_RATE);
-		double rate = 1 -  (1 - DECREASE_RATE)*timeDiff * 400;
-		if(rate < 0 )
-			rate = 0;
-		this->setPower(getVelocity_X() * rate, getVelocity_Z() * rate);
-	}
+            this->setCenter(tX, cord.y, tZ);
+        }
+        else { this->setPower(0,0);}
+        //this->setPower(this->getVelocity_X() * DECREASE_RATE, this->getVelocity_Z() * DECREASE_RATE);
+        double rate = 1 -  (1 - DECREASE_RATE)*timeDiff * 400;
+        if(rate < 0 )
+            rate = 0;
+        this->setPower(getVelocity_X() * rate, getVelocity_Z() * rate);
+    }
 
-	double getVelocity_X() { return this->m_velocity_x;	}
-	double getVelocity_Z() { return this->m_velocity_z; }
+    double getVelocity_X() { return this->m_velocity_x;	}
+    double getVelocity_Z() { return this->m_velocity_z; }
 
-	void setPower(double vx, double vz)
-	{
-		this->m_velocity_x = vx;
-		this->m_velocity_z = vz;
-	}
+    void setPower(double vx, double vz)
+    {
+        this->m_velocity_x = vx;
+        this->m_velocity_z = vz;
+    }
 
-	void setCenter(float x, float y, float z)
-	{
-		D3DXMATRIX m;
-		center_x=x;	center_y=y;	center_z=z;
-		D3DXMatrixTranslation(&m, x, y, z);
-		setLocalTransform(m);
-	}
+    void setCenter(float x, float y, float z)
+    {
+        D3DXMATRIX m;
+        center_x=x;	center_y=y;	center_z=z;
+        D3DXMatrixTranslation(&m, x, y, z);
+        setLocalTransform(m);
+    }
 
-	float getRadius(void)  const { return (float)(M_RADIUS);  }
+    float getRadius(void)  const { return (float)(M_RADIUS);  }
     const D3DXMATRIX& getLocalTransform(void) const { return m_mLocal; }
     void setLocalTransform(const D3DXMATRIX& mLocal) { m_mLocal = mLocal; }
     D3DXVECTOR3 getCenter(void) const
@@ -213,10 +213,10 @@ class CWall {
 private:
 
     float					m_x;
-	float					m_z;
-	float                   m_width;
+    float					m_z;
+    float                   m_width;
     float                   m_depth;
-	float					m_height;
+    float					m_height;
 
 public:
     CWall(void)
@@ -261,10 +261,10 @@ public:
         pDevice->SetTransform(D3DTS_WORLD, &mWorld);
         pDevice->MultiplyTransform(D3DTS_WORLD, &m_mLocal);
         pDevice->SetMaterial(&m_mtrl);
-		m_pBoundMesh->DrawSubset(0);
+        m_pBoundMesh->DrawSubset(0);
     }
 
-	bool hasIntersected(CSphere& ball)
+    bool hasIntersected(CSphere& ball)
     {
         D3DXVECTOR2 ballCenter = D3DXVECTOR2(ball.getCenter().x, ball.getCenter().z);
         D3DXVECTOR2 boxMinCorner = D3DXVECTOR2(m_x - m_width / 2, m_z - m_depth / 2);
@@ -275,9 +275,9 @@ public:
         double squareDistance = (x - ballCenter.x) * (x - ballCenter.x) + (y - ballCenter.y) * (y - ballCenter.y);
 
         return squareDistance <= ball.getRadius() * ball.getRadius() + std::numeric_limits<float>::epsilon();
-	}
+    }
 
-	void hitBy(CSphere& ball)
+    void hitBy(CSphere& ball)
     {
         const float WALL_HIT_DECREASE_RATE = 0.98f;
 
@@ -294,17 +294,17 @@ public:
                 ball.setPower(-ball.getVelocity_X() * WALL_HIT_DECREASE_RATE, ball.getVelocity_Z() * WALL_HIT_DECREASE_RATE);
             }
         }
-	}
+    }
 
-	void setPosition(float x, float y, float z)
-	{
-		D3DXMATRIX m;
-		this->m_x = x;
-		this->m_z = z;
+    void setPosition(float x, float y, float z)
+    {
+        D3DXMATRIX m;
+        this->m_x = x;
+        this->m_z = z;
 
-		D3DXMatrixTranslation(&m, x, y, z);
-		setLocalTransform(m);
-	}
+        D3DXMatrixTranslation(&m, x, y, z);
+        setLocalTransform(m);
+    }
 
     float getHeight(void) const { return M_HEIGHT; }
 
@@ -313,7 +313,7 @@ public:
 private :
     void setLocalTransform(const D3DXMATRIX& mLocal) { m_mLocal = mLocal; }
 
-	D3DXMATRIX              m_mLocal;
+    D3DXMATRIX              m_mLocal;
     D3DMATERIAL9            m_mtrl;
     ID3DXMesh*              m_pBoundMesh;
 };
@@ -428,43 +428,43 @@ void destroyAllLegoBlock(void)
 // initialization
 bool Setup()
 {
-	int i;
+    int i;
 
     D3DXMatrixIdentity(&g_mWorld);
     D3DXMatrixIdentity(&g_mView);
     D3DXMatrixIdentity(&g_mProj);
 
-	// create plane and set the position
+    // create plane and set the position
     if (false == g_legoPlane.create(Device, -1, -1, 9, 0.03f, 6, d3d::GREEN)) return false;
     g_legoPlane.setPosition(0.0f, -0.0006f / 5, 0.0f);
 
-	// create walls and set the position. note that there are four walls
-	if (false == g_legowall[0].create(Device, -1, -1, 9, 0.3f, 0.12f, d3d::DARKRED)) return false;
-	g_legowall[0].setPosition(0.0f, 0.12f, 3.06f);
-	if (false == g_legowall[1].create(Device, -1, -1, 9, 0.3f, 0.12f, d3d::DARKRED)) return false;
-	g_legowall[1].setPosition(0.0f, 0.12f, -3.06f);
-	if (false == g_legowall[2].create(Device, -1, -1, 0.12f, 0.3f, 6.24f, d3d::DARKRED)) return false;
-	g_legowall[2].setPosition(4.56f, 0.12f, 0.0f);
-	if (false == g_legowall[3].create(Device, -1, -1, 0.12f, 0.3f, 6.24f, d3d::DARKRED)) return false;
-	g_legowall[3].setPosition(-4.56f, 0.12f, 0.0f);
+    // create walls and set the position. note that there are four walls
+    if (false == g_legowall[0].create(Device, -1, -1, 9, 0.3f, 0.12f, d3d::DARKRED)) return false;
+    g_legowall[0].setPosition(0.0f, 0.12f, 3.06f);
+    if (false == g_legowall[1].create(Device, -1, -1, 9, 0.3f, 0.12f, d3d::DARKRED)) return false;
+    g_legowall[1].setPosition(0.0f, 0.12f, -3.06f);
+    if (false == g_legowall[2].create(Device, -1, -1, 0.12f, 0.3f, 6.24f, d3d::DARKRED)) return false;
+    g_legowall[2].setPosition(4.56f, 0.12f, 0.0f);
+    if (false == g_legowall[3].create(Device, -1, -1, 0.12f, 0.3f, 6.24f, d3d::DARKRED)) return false;
+    g_legowall[3].setPosition(-4.56f, 0.12f, 0.0f);
 
-	// create four balls and set the position
-	for (i=0;i<4;i++) {
-		if (false == g_sphere[i].create(Device, sphereColor[i])) return false;
-		g_sphere[i].setCenter(spherePos[i][0], (float)M_RADIUS , spherePos[i][1]);
-		g_sphere[i].setPower(0,0);
-	}
+    // create four balls and set the position
+    for (i=0;i<4;i++) {
+        if (false == g_sphere[i].create(Device, sphereColor[i])) return false;
+        g_sphere[i].setCenter(spherePos[i][0], (float)M_RADIUS , spherePos[i][1]);
+        g_sphere[i].setPower(0,0);
+    }
 
-	// create blue ball for set direction
+    // create blue ball for set direction
     if (false == g_target_blueball.create(Device, d3d::BLUE)) return false;
-	g_target_blueball.setCenter(.0f, (float)M_RADIUS , .0f);
+    g_target_blueball.setCenter(.0f, (float)M_RADIUS , .0f);
 
-	// light setting
+    // light setting
     D3DLIGHT9 lit;
     ::ZeroMemory(&lit, sizeof(lit));
     lit.Type         = D3DLIGHT_POINT;
     lit.Diffuse      = d3d::WHITE;
-	lit.Specular     = d3d::WHITE * 0.9f;
+    lit.Specular     = d3d::WHITE * 0.9f;
     lit.Ambient      = d3d::WHITE * 0.9f;
     lit.Position     = D3DXVECTOR3(0.0f, 3.0f, 0.0f);
     lit.Range        = 100.0f;
@@ -474,33 +474,33 @@ bool Setup()
     if (false == g_light.create(Device, lit))
         return false;
 
-	// Position and aim the camera.
-	D3DXVECTOR3 pos(0.0f, 5.0f, -8.0f);
-	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
-	D3DXVECTOR3 up(0.0f, 2.0f, 0.0f);
-	D3DXMatrixLookAtLH(&g_mView, &pos, &target, &up);
-	Device->SetTransform(D3DTS_VIEW, &g_mView);
+    // Position and aim the camera.
+    D3DXVECTOR3 pos(0.0f, 5.0f, -8.0f);
+    D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
+    D3DXVECTOR3 up(0.0f, 2.0f, 0.0f);
+    D3DXMatrixLookAtLH(&g_mView, &pos, &target, &up);
+    Device->SetTransform(D3DTS_VIEW, &g_mView);
 
-	// Set the projection matrix.
-	D3DXMatrixPerspectiveFovLH(&g_mProj, D3DX_PI / 4,
+    // Set the projection matrix.
+    D3DXMatrixPerspectiveFovLH(&g_mProj, D3DX_PI / 4,
         (float)Width / (float)Height, 1.0f, 100.0f);
-	Device->SetTransform(D3DTS_PROJECTION, &g_mProj);
+    Device->SetTransform(D3DTS_PROJECTION, &g_mProj);
 
     // Set render states.
     Device->SetRenderState(D3DRS_LIGHTING, TRUE);
     Device->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
     Device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
 
-	g_light.setLight(Device, g_mWorld);
-	return true;
+    g_light.setLight(Device, g_mWorld);
+    return true;
 }
 
 void Cleanup(void)
 {
     g_legoPlane.destroy();
-	for(int i = 0 ; i < 4; i++) {
-		g_legowall[i].destroy();
-	}
+    for(int i = 0 ; i < 4; i++) {
+        g_legowall[i].destroy();
+    }
     destroyAllLegoBlock();
     g_light.destroy();
 }
@@ -510,64 +510,64 @@ void Cleanup(void)
 // the distance of moving balls should be "velocity * timeDelta"
 bool Display(float timeDelta)
 {
-	int i=0;
-	int j = 0;
+    int i=0;
+    int j = 0;
 
 
-	if( Device )
-	{
-		Device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00afafaf, 1.0f, 0);
-		Device->BeginScene();
+    if( Device )
+    {
+        Device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00afafaf, 1.0f, 0);
+        Device->BeginScene();
 
-		// update the position of each ball. during update, check whether each ball hit by walls.
-		for( i = 0; i < 4; i++) {
-			g_sphere[i].ballUpdate(timeDelta);
-			for(j = 0; j < 4; j++){ g_legowall[i].hitBy(g_sphere[j]); }
-		}
+        // update the position of each ball. during update, check whether each ball hit by walls.
+        for( i = 0; i < 4; i++) {
+            g_sphere[i].ballUpdate(timeDelta);
+            for(j = 0; j < 4; j++){ g_legowall[i].hitBy(g_sphere[j]); }
+        }
 
-		// check whether any two balls hit together and update the direction of balls
-		for(i = 0 ;i < 4; i++){
-			for(j = 0 ; j < 4; j++) {
-				if(i >= j) {continue;}
-				g_sphere[i].hitBy(g_sphere[j]);
-			}
-		}
+        // check whether any two balls hit together and update the direction of balls
+        for(i = 0 ;i < 4; i++){
+            for(j = 0 ; j < 4; j++) {
+                if(i >= j) {continue;}
+                g_sphere[i].hitBy(g_sphere[j]);
+            }
+        }
 
-		// draw plane, walls, and spheres
-		g_legoPlane.draw(Device, g_mWorld);
-		for (i=0;i<4;i++) 	{
-			g_legowall[i].draw(Device, g_mWorld);
-			g_sphere[i].draw(Device, g_mWorld);
-		}
-		g_target_blueball.draw(Device, g_mWorld);
+        // draw plane, walls, and spheres
+        g_legoPlane.draw(Device, g_mWorld);
+        for (i=0;i<4;i++) 	{
+            g_legowall[i].draw(Device, g_mWorld);
+            g_sphere[i].draw(Device, g_mWorld);
+        }
+        g_target_blueball.draw(Device, g_mWorld);
         g_light.draw(Device);
 
-		Device->EndScene();
-		Device->Present(0, 0, 0, 0);
-		Device->SetTexture( 0, NULL );
-	}
-	return true;
+        Device->EndScene();
+        Device->Present(0, 0, 0, 0);
+        Device->SetTexture( 0, NULL );
+    }
+    return true;
 }
 
 LRESULT CALLBACK d3d::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	static bool wire = false;
-	static bool isReset = true;
+    static bool wire = false;
+    static bool isReset = true;
     static int old_x = 0;
     static int old_y = 0;
     static enum { WORLD_MOVE, LIGHT_MOVE, BLOCK_MOVE } move = WORLD_MOVE;
 
-	switch( msg ) {
-	case WM_DESTROY:
+    switch( msg ) {
+    case WM_DESTROY:
         {
-			::PostQuitMessage(0);
-			break;
+            ::PostQuitMessage(0);
+            break;
         }
-	case WM_KEYDOWN:
+    case WM_KEYDOWN:
         {
             switch (wParam) {
             case VK_ESCAPE:
-				::DestroyWindow(hwnd);
+                ::DestroyWindow(hwnd);
                 break;
             case VK_RETURN:
                 if (NULL != Device) {
@@ -578,27 +578,27 @@ LRESULT CALLBACK d3d::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 break;
             case VK_SPACE:
 
-				D3DXVECTOR3 targetpos = g_target_blueball.getCenter();
-				D3DXVECTOR3	whitepos = g_sphere[3].getCenter();
-				double theta = acos(sqrt(pow(targetpos.x - whitepos.x, 2)) / sqrt(pow(targetpos.x - whitepos.x, 2) +
-					pow(targetpos.z - whitepos.z, 2)));		// 기본 1 사분면
-				if (targetpos.z - whitepos.z <= 0 && targetpos.x - whitepos.x >= 0) { theta = -theta; }	//4 사분면
-				if (targetpos.z - whitepos.z >= 0 && targetpos.x - whitepos.x <= 0) { theta = PI - theta; } //2 사분면
-				if (targetpos.z - whitepos.z <= 0 && targetpos.x - whitepos.x <= 0){ theta = PI + theta; } // 3 사분면
-				double distance = sqrt(pow(targetpos.x - whitepos.x, 2) + pow(targetpos.z - whitepos.z, 2));
-				g_sphere[3].setPower(distance * cos(theta), distance * sin(theta));
-				break;
+                D3DXVECTOR3 targetpos = g_target_blueball.getCenter();
+                D3DXVECTOR3	whitepos = g_sphere[3].getCenter();
+                double theta = acos(sqrt(pow(targetpos.x - whitepos.x, 2)) / sqrt(pow(targetpos.x - whitepos.x, 2) +
+                    pow(targetpos.z - whitepos.z, 2)));		// 기본 1 사분면
+                if (targetpos.z - whitepos.z <= 0 && targetpos.x - whitepos.x >= 0) { theta = -theta; }	//4 사분면
+                if (targetpos.z - whitepos.z >= 0 && targetpos.x - whitepos.x <= 0) { theta = PI - theta; } //2 사분면
+                if (targetpos.z - whitepos.z <= 0 && targetpos.x - whitepos.x <= 0){ theta = PI + theta; } // 3 사분면
+                double distance = sqrt(pow(targetpos.x - whitepos.x, 2) + pow(targetpos.z - whitepos.z, 2));
+                g_sphere[3].setPower(distance * cos(theta), distance * sin(theta));
+                break;
 
-			}
-			break;
+            }
+            break;
         }
 
-	case WM_MOUSEMOVE:
+    case WM_MOUSEMOVE:
         {
             int new_x = LOWORD(lParam);
             int new_y = HIWORD(lParam);
-			float dx;
-			float dy;
+            float dx;
+            float dy;
 
             if (LOWORD(wParam) & MK_LBUTTON) {
 
@@ -629,50 +629,50 @@ LRESULT CALLBACK d3d::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             } else {
                 isReset = true;
 
-				if (LOWORD(wParam) & MK_RBUTTON) {
-					dx = (old_x - new_x);// * 0.01f;
-					dy = (old_y - new_y);// * 0.01f;
+                if (LOWORD(wParam) & MK_RBUTTON) {
+                    dx = (old_x - new_x);// * 0.01f;
+                    dy = (old_y - new_y);// * 0.01f;
 
-					D3DXVECTOR3 coord3d=g_target_blueball.getCenter();
-					g_target_blueball.setCenter(coord3d.x+dx*(-0.007f),coord3d.y,coord3d.z+dy*0.007f );
-				}
-				old_x = new_x;
-				old_y = new_y;
+                    D3DXVECTOR3 coord3d=g_target_blueball.getCenter();
+                    g_target_blueball.setCenter(coord3d.x+dx*(-0.007f),coord3d.y,coord3d.z+dy*0.007f );
+                }
+                old_x = new_x;
+                old_y = new_y;
 
                 move = WORLD_MOVE;
             }
             break;
         }
-	}
+    }
 
-	return ::DefWindowProc(hwnd, msg, wParam, lParam);
+    return ::DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
 int WINAPI WinMain(HINSTANCE hinstance,
-				   HINSTANCE prevInstance,
-				   PSTR cmdLine,
-				   int showCmd)
+                   HINSTANCE prevInstance,
+                   PSTR cmdLine,
+                   int showCmd)
 {
     srand(static_cast<unsigned int>(time(NULL)));
 
-	if(!d3d::InitD3D(hinstance,
-		Width, Height, true, D3DDEVTYPE_HAL, &Device))
-	{
-		::MessageBox(0, "InitD3D() - FAILED", 0, 0);
-		return 0;
-	}
+    if(!d3d::InitD3D(hinstance,
+        Width, Height, true, D3DDEVTYPE_HAL, &Device))
+    {
+        ::MessageBox(0, "InitD3D() - FAILED", 0, 0);
+        return 0;
+    }
 
-	if(!Setup())
-	{
-		::MessageBox(0, "Setup() - FAILED", 0, 0);
-		return 0;
-	}
+    if(!Setup())
+    {
+        ::MessageBox(0, "Setup() - FAILED", 0, 0);
+        return 0;
+    }
 
-	d3d::EnterMsgLoop( Display );
+    d3d::EnterMsgLoop( Display );
 
-	Cleanup();
+    Cleanup();
 
-	Device->Release();
+    Device->Release();
 
-	return 0;
+    return 0;
 }
