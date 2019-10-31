@@ -112,7 +112,7 @@ public:
     void hitBy(CSphere& ball)
     {
         const float BACKTRACK_TIME_STEP = 0.001f;
-        const float BALL_HIT_DECREASE_RATE = 0.93f;
+        const float BALL_HIT_DECREASE_RATE = 0.95f;
 
         if (this->hasIntersected(ball))
         {
