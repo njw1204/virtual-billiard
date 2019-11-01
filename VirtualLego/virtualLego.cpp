@@ -116,13 +116,13 @@ public:
 
         if (this->hasIntersected(ball))
         {
-            while (this->hasIntersected(ball))
+            do
             {
                 this->center_x -= this->m_velocity_x * BACKTRACK_TIME_STEP;
                 this->center_z -= this->m_velocity_z * BACKTRACK_TIME_STEP;
                 ball.center_x -= ball.m_velocity_x * BACKTRACK_TIME_STEP;
                 ball.center_z -= ball.m_velocity_z * BACKTRACK_TIME_STEP;
-            }
+            } while (this->hasIntersected(ball));
 
             D3DXVECTOR2 aPos = D3DXVECTOR2(this->center_x, this->center_z);
             D3DXVECTOR2 bPos = D3DXVECTOR2(ball.center_x, ball.center_z);
